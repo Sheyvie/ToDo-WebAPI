@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoApp.Responses;
 using ToDoApp.Services.Iservices;
 using ToDoApp.Requests;
+using Newtonsoft.Json;
 
 namespace ToDoApp.Controllers
 {
@@ -15,6 +16,7 @@ namespace ToDoApp.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IToDoListService _toDoListService;
+        const int maxPageSize =20;
 
         public ToDoListController(IToDoListService service, IMapper mapper)
         {
@@ -41,10 +43,17 @@ namespace ToDoApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoListResponse>>>GetAll()
+        public async Task<ActionResult<(IEnumerable<ToDoListResponse>, PaginationMetaData)>> GetAll([FromQuery]string? TaskName, [FromQuery] string?Username, int pageSize=1 , int pageNumber =1)
         {
-            var response = await _toDoListService.GetAllAsync();
+
+            if(pageSize> maxPageSize)
+            {
+                pageSize = maxPageSize;
+            }
+            var (response,paginationMetadata) = await _toDoListService.GetAllAsync(TaskName,Username, pageSize,pageNumber);
             var tasks = _mapper.Map<IEnumerable<ToDoListResponse>>(response);
+            //setting pagination to header
+            Response.Headers.Add("Pagination", JsonConvert.SerializeObject(paginationMetadata));
             return Ok(tasks);
         }
 

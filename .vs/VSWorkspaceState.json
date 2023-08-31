@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ToDoApp"
+    "\\ToDoApp",
+    "\\ToDoApp\\Services"
   ],
-  "SelectedNode": "\\ToDoApp\\ToDoApp.sln",
+  "SelectedNode": "\\ToDoApp\\appsettings.json",
   "PreviewInSolutionExplorer": false
 }
